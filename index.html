@@ -3,10 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Феник Cloud OS — Google Drive Edition</title>
+    <title>Феник Cloud OS — Rainbow Edition</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { background-color: #0d1117; color: #c9d1d9; height: 100vh; overflow: hidden; }
+        body {
+            /* Анимированный радужный фон */
+            background: linear-gradient(135deg, #ff007f, #7f00ff, #00f0ff, #00ff66, #ffcc00, #ff007f);
+            background-size: 400% 400%;
+            animation: rainbowBG 12s ease infinite;
+            color: #ffffff;
+            height: 100vh;
+            overflow: hidden;
+        }
+        @keyframes rainbowBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
         
         #boot-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #00ff66;
@@ -15,22 +28,32 @@
         .console-text { white-space: pre-line; font-size: 16px; line-height: 1.5; }
         
         #logo-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #121212; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 90; opacity: 0; pointer-events: none; transition: opacity 1s ease;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 90; opacity: 0; pointer-events: none; transition: opacity 1s ease;
         }
         .cat-logo { font-size: 72px; margin-bottom: 20px; animation: pulse 1.5s infinite alternate; }
-        .win-spinner { width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid #4285F4; border-radius: 50%; animation: spin 1s linear infinite; margin-top: 30px; }
+        .win-spinner { width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.2); border-top: 4px solid #ffffff; border-radius: 50%; animation: spin 1s linear infinite; margin-top: 30px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulse { 0% { transform: scale(1); } 100% { transform: scale(1.08); } }
 
-        #main-app { display: none; height: 100vh; flex-direction: column; background: #0f172a; }
-        header { background: #1e293b; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
-        .brand { display: flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 600; color: #f8fafc; }
-        .btn { background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: background 0.2s; }
-        .btn:hover { background: #1d4ed8; }
+        #main-app { display: none; height: 100vh; flex-direction: column; background: transparent; }
+        header { background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.2); }
+        .brand { display: flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 600; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .btn { background: linear-gradient(135deg, #2563eb, #9333ea); color: white; border: none; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: transform 0.2s; }
+        .btn:hover { transform: scale(1.05); }
         .content { flex: 1; padding: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        .cloud-box { background: #1e293b; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-width: 600px; width: 100%; border: 1px solid #334155; }
-        .file-list { margin-top: 20px; text-align: left; max-height: 250px; overflow-y: auto; background: #0f172a; border-radius: 8px; padding: 10px; }
-        .file-item { padding: 10px 12px; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between; align-items: center; }
+        
+        .cloud-box { 
+            background: rgba(0, 0, 0, 0.5); 
+            backdrop-filter: blur(15px); 
+            padding: 40px; 
+            border-radius: 20px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
+            max-width: 600px; 
+            width: 100%; 
+            border: 1px solid rgba(255,255,255,0.2); 
+        }
+        .file-list { margin-top: 20px; text-align: left; max-height: 250px; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 12px; padding: 10px; border: 1px solid rgba(255,255,255,0.1); }
+        .file-item { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
     </style>
     <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
@@ -39,7 +62,7 @@
 
     <div id="boot-screen">
         <div class="console-text" id="console"></div>
-        <div style="color: #58a6ff; font-size: 14px;">PHENIX KERNEL v40.0 - GOOGLE DRIVE API SYNC</div>
+        <div style="color: #00ff66; font-size: 14px;">PHENIX KERNEL v40.0 - RAINBOW PROTOCOL ACTIVE</div>
     </div>
 
     <div id="logo-screen">
@@ -51,15 +74,15 @@
     <div id="main-app">
         <header>
             <div class="brand"><span>🐈‍⬛</span> Феник Google Drive Hub</div>
-            <button class="btn" id="auth-btn" style="background: #22c55e;">Подключиться к облаку</button>
+            <button class="btn" id="auth-btn" style="background: linear-gradient(135deg, #059669, #10b981);">Подключиться к облаку</button>
         </header>
         <div class="content">
             <div class="cloud-box">
-                <h2 style="margin-bottom: 15px; color: #f8fafc;">Ваш реальный Google Диск</h2>
-                <p id="status-text" style="color: #94a3b8; margin-bottom: 25px;">Нажмите кнопку вверху для авторизации.</p>
+                <h2 style="margin-bottom: 15px; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">Ваш реальный Google Диск</h2>
+                <p id="status-text" style="color: #e2e8f0; margin-bottom: 25px;">Синхронизация с 5 ТБ хранилища активна!</p>
                 <button class="btn" id="create-file-btn" style="display: none;">+ Создать файл на Диске</button>
                 <div class="file-list" id="files">
-                    <div class="file-item" style="color: #64748b;">Здесь появятся файлы с вашего диска...</div>
+                    <div class="file-item" style="color: #cbd5e1;">Загрузка файлов с диска...</div>
                 </div>
             </div>
         </div>
@@ -81,9 +104,9 @@
         const mainApp = document.getElementById('main-app');
 
         const logs = [
-            "Initializing Phenix Security Subsystem...",
+            "Initializing Phenix Rainbow Subsystem...",
             "Loading Secret Protocol #40...",
-            "Bypassing Roskomnadzor DPI filters...",
+            "Injecting gradient matrix...",
             "Establishing secure tunnel with Google Drive API...",
             "All systems nominal. Welcome back, Boss."
         ];
@@ -93,7 +116,7 @@
             if (lineIdx < logs.length) {
                 consoleEl.innerText += "> " + logs[lineIdx] + "\n";
                 lineIdx++;
-                setTimeout(typeLogs, 300);
+                setTimeout(typeLogs, 250);
             } else {
                 setTimeout(() => {
                     bootScreen.style.opacity = '0';
@@ -106,12 +129,12 @@
                                 logoScreen.style.display = 'none';
                                 mainApp.style.display = 'flex';
                             }, 800);
-                        }, 1800);
+                        }, 1200);
                     }, 800);
-                }, 400);
+                }, 300);
             }
         }
-        setTimeout(typeLogs, 400);
+        setTimeout(typeLogs, 300);
 
         function gapiLoaded() {
             gapi.load('client', initializeGapiClient);
@@ -146,7 +169,7 @@
                     throw (resp);
                 }
                 authBtn.innerText = 'Подключено ✓';
-                authBtn.style.background = '#059669';
+                authBtn.style.background = 'linear-gradient(135deg, #059669, #34d399)';
                 statusText.innerText = 'Синхронизация с 5 ТБ хранилища активна!';
                 createFileBtn.style.display = 'inline-block';
                 listUserFiles();
@@ -170,14 +193,14 @@
                 fileList.innerHTML = '';
                 
                 if (!files || files.length === 0) {
-                    fileList.innerHTML = '<div class="file-item" style="color: #64748b;">Файлы не найдены.</div>';
+                    fileList.innerHTML = '<div class="file-item" style="color: #cbd5e1;">Файлы не найдены.</div>';
                     return;
                 }
                 
                 files.forEach((file) => {
                     const div = document.createElement('div');
                     div.className = 'file-item';
-                    div.innerHTML = `📁 ${file.name}<span style="color: #38bdf8;">ID: ${file.id.substring(0,6)}...</span>`;
+                    div.innerHTML = `📁 ${file.name}<span style="color: #fde047;">ID: ${file.id.substring(0,6)}...</span>`;
                     fileList.appendChild(div);
                 });
             } catch (err) {
@@ -190,7 +213,7 @@
                 'name': 'Феник_Документ_' + Math.floor(Math.random() * 1000) + '.txt',
                 'mimeType': 'text/plain'
             };
-            const fileContent = 'Привет от Феник Cloud OS! Секретный протокол #40 работает безупречно.';
+            const fileContent = 'Привет от Феник Cloud OS (Rainbow Edition)! Секретный протокол #40 сияет всеми красками.';
             const accessToken = gapi.client.getToken().access_token;
 
             const form = new FormData();
