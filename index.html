@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Феник Cloud OS — Cyber Neon Remaster</title>
+    <title>Феник Cloud OS — Instant Neon</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
         body {
@@ -19,22 +19,8 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        
-        #boot-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #00ff66;
-            font-family: 'Courier New', Courier, monospace; padding: 40px; z-index: 100; display: flex; flex-direction: column; justify-content: space-between; transition: opacity 0.8s ease;
-        }
-        .console-text { white-space: pre-line; font-size: 16px; line-height: 1.5; }
-        
-        #logo-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 90; opacity: 0; pointer-events: none; transition: opacity 1s ease;
-        }
-        .cat-logo { font-size: 72px; margin-bottom: 20px; animation: pulse 1.5s infinite alternate; }
-        .win-spinner { width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.2); border-top: 4px solid #ffffff; border-radius: 50%; animation: spin 1s linear infinite; margin-top: 30px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes pulse { 0% { transform: scale(1); } 100% { transform: scale(1.08); } }
 
-        #main-app { display: none; height: 100vh; flex-direction: column; background: transparent; }
+        #main-app { display: flex; height: 100vh; flex-direction: column; background: transparent; }
         header { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(12px); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(255,255,255,0.3); box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
         .brand { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; color: #ffffff; text-shadow: 0 0 10px rgba(0,240,255,0.8); }
         
@@ -65,7 +51,6 @@
         .file-item, .mail-item { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; font-size: 13px; cursor: pointer; transition: background 0.2s; }
         .file-item:hover, .mail-item:hover { background: rgba(255,255,255,0.1); border-radius: 8px; }
         
-        /* Модальное окно для чтения/ответа на письма */
         #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 200; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: #1e1e2f; padding: 20px; border-radius: 16px; max-width: 500px; width: 100%; border: 2px solid #00f0ff; box-shadow: 0 0 25px rgba(0,240,255,0.5); text-align: left; }
         textarea { width: 100%; height: 100px; background: #0d1117; color: #fff; border: 1px solid #334155; border-radius: 8px; padding: 10px; margin-top: 10px; resize: none; }
@@ -74,17 +59,6 @@
     <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 </head>
 <body>
-
-    <div id="boot-screen">
-        <div class="console-text" id="console"></div>
-        <div style="color: #00ff66; font-size: 14px;">NEON REMASTER v4.3 - ACTIVE</div>
-    </div>
-
-    <div id="logo-screen">
-        <div class="cat-logo">🐈‍⬛🔥</div>
-        <h2 style="color: #fff; margin-top: 10px;">Феник Cloud OS Neon</h2>
-        <div class="win-spinner"></div>
-    </div>
 
     <div id="main-app">
         <header>
@@ -124,7 +98,7 @@
         </div>
     </div>
 
-    <!-- Модальное окно для чтения и ответа -->
+    <!-- Модальное окно -->
     <div id="modal">
         <div class="modal-content">
             <h3 id="modal-subject" style="color: #00f0ff; margin-bottom: 5px;">Тема письма</h3>
@@ -149,42 +123,6 @@
 
         let tokenClient;
         let currentEmailData = null;
-        const consoleEl = document.getElementById('console');
-        const bootScreen = document.getElementById('boot-screen');
-        const logoScreen = document.getElementById('logo-screen');
-        const mainApp = document.getElementById('main-app');
-
-        const logs = [
-            "Initializing Cyber Neon Kernel...",
-            "Loading Secret Protocol #40...",
-            "Activating full Gmail & Drive modules...",
-            "All systems nominal. Welcome back, Boss."
-        ];
-
-        let lineIdx = 0;
-        function typeLogs() {
-            if (lineIdx < logs.length) {
-                consoleEl.innerText += "> " + logs[lineIdx] + "\n";
-                lineIdx++;
-                setTimeout(typeLogs, 250);
-            } else {
-                setTimeout(() => {
-                    bootScreen.style.opacity = '0';
-                    setTimeout(() => {
-                        bootScreen.style.display = 'none';
-                        logoScreen.style.opacity = '1';
-                        setTimeout(() => {
-                            logoScreen.style.opacity = '0';
-                            setTimeout(() => {
-                                logoScreen.style.display = 'none';
-                                mainApp.style.display = 'flex';
-                            }, 800);
-                        }, 1200);
-                    }, 800);
-                }, 300);
-            }
-        }
-        setTimeout(typeLogs, 300);
 
         function gapiLoaded() { gapi.load('client', initializeGapiClient); }
         async function initializeGapiClient() { await gapi.client.init({ discoveryDocs: DISCOVERY_DOCS }); }
@@ -234,7 +172,32 @@
                 files.forEach((file) => {
                     const div = document.createElement('div');
                     div.className = 'file-item';
-                    div.innerHTML = `📁 ${file.name}<span style="color: #38bdf8;">ID: ${file.id.substring(0,6)}...</span>`; fileList.appendChild(div); }); } catch (err) { console.error("Ошибка загрузки файлов", err); } }  async function listUserMails() { try { const response = await gapi.client.gmail.users.messages.list({ userId: 'me', maxResults: 5 }); const messages = response.result.messages; const mailList = document.getElementById('mails'); mailList.innerHTML = ''; if (!messages \vert{}\vert{} messages.length === 0) { mailList.innerHTML = '<div class="mail-item" style="color: #94a3b8;">Писем нет.</div>'; return; } for (let msg of messages) { const details = await gapi.client.gmail.users.messages.get({ userId: 'me', id: msg.id }); const headers = details.result.payload.headers; const subject = headers.find(h => h.name === 'Subject')?.value \vert{}\vert{} 'Без темы'; const sender = headers.find(h => h.name === 'From')?.value \vert{}\vert{} 'Неизвестно'; const snippet = details.result.snippet \vert{}\vert{} '';  const div = document.createElement('div'); div.className = 'mail-item'; div.innerHTML = `✉️ <b>${subject.substring(0, 25)}...</b>`;
+                    div.innerHTML = `📁 ${file.name}<span style="color: #38bdf8;">ID: ${file.id.substring(0,6)}...</span>`;
+                    fileList.appendChild(div);
+                });
+            } catch (err) { console.error("Ошибка загрузки файлов", err); }
+        }
+
+        async function listUserMails() {
+            try {
+                const response = await gapi.client.gmail.users.messages.list({ userId: 'me', maxResults: 5 });
+                const messages = response.result.messages;
+                const mailList = document.getElementById('mails');
+                mailList.innerHTML = '';
+                if (!messages || messages.length === 0) {
+                    mailList.innerHTML = '<div class="mail-item" style="color: #94a3b8;">Писем нет.</div>';
+                    return;
+                }
+                for (let msg of messages) {
+                    const details = await gapi.client.gmail.users.messages.get({ userId: 'me', id: msg.id });
+                    const headers = details.result.payload.headers;
+                    const subject = headers.find(h => h.name === 'Subject')?.value || 'Без темы';
+                    const sender = headers.find(h => h.name === 'From')?.value || 'Неизвестно';
+                    const snippet = details.result.snippet || '';
+
+                    const div = document.createElement('div');
+                    div.className = 'mail-item';
+                    div.innerHTML = `✉️ <b>${subject.substring(0, 25)}...</b>`;
                     div.onclick = () => openEmailModal(subject, sender, snippet, sender);
                     mailList.appendChild(div);
                 }
@@ -256,12 +219,12 @@
             const replyText = document.getElementById('reply-text').value;
             if (!replyText) { alert('Введите текст ответа!'); return; }
             
-            // Извлекаем email адрес отправителя из строки "Name <email@domain.com>"
             let match = currentEmailData.replyTo.match(/<(.+?)>/);
             let recipient = match ? match[1] : currentEmailData.replyTo;
 
             const emailLines = [
-                `To: ${recipient}`, `Subject: Re: ${currentEmailData.subject}`,
+                `To: ${recipient}`,
+                `Subject: Re: ${currentEmailData.subject}`,
                 `Content-Type: text/plain; charset="UTF-8"`,
                 ``,
                 replyText
