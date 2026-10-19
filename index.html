@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Феник Cloud OS — Rainbow Edition</title>
+    <title>Феник Cloud OS — Remastered Edition</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
         body {
-            /* Анимированный радужный фон */
             background: linear-gradient(135deg, #ff007f, #7f00ff, #00f0ff, #00ff66, #ffcc00, #ff007f);
             background-size: 400% 400%;
             animation: rainbowBG 12s ease infinite;
@@ -38,22 +37,32 @@
         #main-app { display: none; height: 100vh; flex-direction: column; background: transparent; }
         header { background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.2); }
         .brand { display: flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 600; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        
+        .nav-tabs { display: flex; gap: 10px; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 10px; }
+        .tab-btn { background: transparent; border: none; color: #fff; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: background 0.2s; }
+        .tab-btn.active { background: rgba(255,255,255,0.2); }
+
         .btn { background: linear-gradient(135deg, #2563eb, #9333ea); color: white; border: none; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: transform 0.2s; }
         .btn:hover { transform: scale(1.05); }
-        .content { flex: 1; padding: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        
+        .content { flex: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow-y: auto; }
         
         .cloud-box { 
             background: rgba(0, 0, 0, 0.5); 
             backdrop-filter: blur(15px); 
-            padding: 40px; 
+            padding: 30px; 
             border-radius: 20px; 
             box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
-            max-width: 600px; 
+            max-width: 650px; 
             width: 100%; 
             border: 1px solid rgba(255,255,255,0.2); 
+            display: none;
         }
-        .file-list { margin-top: 20px; text-align: left; max-height: 250px; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 12px; padding: 10px; border: 1px solid rgba(255,255,255,0.1); }
-        .file-item { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .cloud-box.active { display: block; }
+        
+        .action-bar { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 15px; }
+        .file-list, .mail-list { margin-top: 15px; text-align: left; max-height: 220px; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 12px; padding: 10px; border: 1px solid rgba(255,255,255,0.1); }
+        .file-item, .mail-item { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
     </style>
     <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
@@ -62,27 +71,48 @@
 
     <div id="boot-screen">
         <div class="console-text" id="console"></div>
-        <div style="color: #00ff66; font-size: 14px;">PHENIX KERNEL v40.0 - RAINBOW PROTOCOL ACTIVE</div>
+        <div style="color: #00ff66; font-size: 14px;">PHENIX REMASTERED v4.0 - ALL-IN-ONE ACTIVE</div>
     </div>
 
     <div id="logo-screen">
         <div class="cat-logo">🐈‍⬛🔥</div>
-        <h2 style="color: #fff; margin-top: 10px;">Феник Cloud OS</h2>
+        <h2 style="color: #fff; margin-top: 10px;">Феник Cloud OS Remaster</h2>
         <div class="win-spinner"></div>
     </div>
 
     <div id="main-app">
         <header>
-            <div class="brand"><span>🐈‍⬛</span> Феник Google Drive Hub</div>
-            <button class="btn" id="auth-btn" style="background: linear-gradient(135deg, #059669, #10b981);">Подключиться к облаку</button>
+            <div class="brand"><span>🐈‍⬛</span> Феник Hub</div>
+            <div class="nav-tabs">
+                <button class="tab-btn active" onclick="switchTab('drive')">📁 Диск (5ТБ)</button>
+                <button class="tab-btn" onclick="switchTab('mail')">✉️ Почта</button>
+            </div>
+            <button class="btn" id="auth-btn" style="background: linear-gradient(135deg, #059669, #10b981);">Авторизоваться</button>
         </header>
+
         <div class="content">
-            <div class="cloud-box">
-                <h2 style="margin-bottom: 15px; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">Ваш реальный Google Диск</h2>
-                <p id="status-text" style="color: #e2e8f0; margin-bottom: 25px;">Синхронизация с 5 ТБ хранилища активна!</p>
-                <button class="btn" id="create-file-btn" style="display: none;">+ Создать файл на Диске</button>
+            <!-- Вкладка ДИСК -->
+            <div id="tab-drive" class="cloud-box active">
+                <h2 style="margin-bottom: 10px;">Ваш Google Диск</h2>
+                <p id="status-text" style="color: #e2e8f0; margin-bottom: 20px;">Подключитесь для управления файлами и документами.</p>
+                
+                <div class="action-bar" id="actions-bar" style="display: none;">
+                    <button class="btn" onclick="createFile('text/plain', 'Текстовый_файл.txt', 'Привет от Феник OS!')">📄 Текстовый файл</button>
+                    <button class="btn" onclick="createFile('application/vnd.google-apps.document', 'Документ_Феник.gdoc', 'Google Документ создан через Феник OS')" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">📝 Google Документ</button>
+                    <button class="btn" onclick="createFile('application/vnd.google-apps.spreadsheet', 'Таблица_Феник.gsheet', 'Таблица создана через Феник OS')" style="background: linear-gradient(135deg, #10b981, #047857);">📊 Google Таблица</button>
+                </div>
+
                 <div class="file-list" id="files">
-                    <div class="file-item" style="color: #cbd5e1;">Загрузка файлов с диска...</div>
+                    <div class="file-item" style="color: #cbd5e1;">Файлы не загружены. Нажмите «Авторизоваться».</div>
+                </div>
+            </div>
+
+            <!-- Вкладка ПОЧТА -->
+            <div id="tab-mail" class="cloud-box">
+                <h2 style="margin-bottom: 10px;">Входящие сообщения (Gmail)</h2>
+                <p style="color: #e2e8f0; margin-bottom: 20px;">Свежие письма из вашего почтового ящика.</p>
+                <div class="mail-list" id="mails">
+                    <div class="mail-item" style="color: #cbd5e1;">Почта ожидает авторизации...</div>
                 </div>
             </div>
         </div>
@@ -91,23 +121,22 @@
     <script>
         const CLIENT_ID = '291176890400-k9fbeduasamqn1aujs85ea2g2sa0r38a.apps.googleusercontent.com';
         const API_KEY = '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';
-        const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
-        const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+        const DISCOVERY_DOCS = [
+            'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
+            'https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest'
+        ];
+        const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/gmail.readonly';
 
         let tokenClient;
-        let gapiInited = false;
-        let gisInited = false;
-
         const consoleEl = document.getElementById('console');
         const bootScreen = document.getElementById('boot-screen');
         const logoScreen = document.getElementById('logo-screen');
         const mainApp = document.getElementById('main-app');
 
         const logs = [
-            "Initializing Phenix Rainbow Subsystem...",
+            "Initializing Phenix Remastered Kernel...",
             "Loading Secret Protocol #40...",
-            "Injecting gradient matrix...",
-            "Establishing secure tunnel with Google Drive API...",
+            "Mounting Drive & Gmail modules...",
             "All systems nominal. Welcome back, Boss."
         ];
 
@@ -142,9 +171,8 @@
 
         async function initializeGapiClient() {
             await gapi.client.init({
-                discoveryDocs: [DISCOVERY_DOC],
+                discoveryDocs: DISCOVERY_DOCS,
             });
-            gapiInited = true;
         }
 
         function gisLoaded() {
@@ -153,26 +181,20 @@
                 scope: SCOPES,
                 callback: '',
             });
-            gisInited = true;
         }
 
         const authBtn = document.getElementById('auth-btn');
-        const createFileBtn = document.getElementById('create-file-btn');
-        const statusText = document.getElementById('status-text');
-
         authBtn.addEventListener('click', handleAuthClick);
-        createFileBtn.addEventListener('click', createTestFile);
 
         function handleAuthClick() {
             tokenClient.callback = async (resp) => {
-                if (resp.error !== undefined) {
-                    throw (resp);
-                }
+                if (resp.error !== undefined) { throw (resp); }
                 authBtn.innerText = 'Подключено ✓';
                 authBtn.style.background = 'linear-gradient(135deg, #059669, #34d399)';
-                statusText.innerText = 'Синхронизация с 5 ТБ хранилища активна!';
-                createFileBtn.style.display = 'inline-block';
+                document.getElementById('status-text').innerText = 'Синхронизация с 5 ТБ и почтой активна!';
+                document.getElementById('actions-bar').style.display = 'flex';
                 listUserFiles();
+                listUserMails();
             };
 
             if (gapi.client.getToken() === null) {
@@ -182,43 +204,65 @@
             }
         }
 
+        function switchTab(tabName) {
+            document.querySelectorAll('.cloud-box').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            if (tabName === 'drive') {
+                document.getElementById('tab-drive').classList.add('active');
+                event.target.classList.add('active');
+            } else {
+                document.getElementById('tab-mail').classList.add('active');
+                event.target.classList.add('active');
+            }
+        }
+
         async function listUserFiles() {
             try {
-                const response = await gapi.client.drive.files.list({
-                    'pageSize': 10,
-                    'fields': 'files(id, name)',
-                });
+                const response = await gapi.client.drive.files.list({ pageSize: 10, fields: 'files(id, name)' });
                 const files = response.result.files;
                 const fileList = document.getElementById('files');
                 fileList.innerHTML = '';
-                
                 if (!files || files.length === 0) {
                     fileList.innerHTML = '<div class="file-item" style="color: #cbd5e1;">Файлы не найдены.</div>';
                     return;
                 }
-                
                 files.forEach((file) => {
                     const div = document.createElement('div');
                     div.className = 'file-item';
                     div.innerHTML = `📁 ${file.name}<span style="color: #fde047;">ID: ${file.id.substring(0,6)}...</span>`;
                     fileList.appendChild(div);
                 });
-            } catch (err) {
-                console.error("Ошибка загрузки файлов", err);
-            }
+            } catch (err) { console.error("Ошибка загрузки файлов", err); }
         }
 
-        async function createTestFile() {
-            const metadata = {
-                'name': 'Феник_Документ_' + Math.floor(Math.random() * 1000) + '.txt',
-                'mimeType': 'text/plain'
-            };
-            const fileContent = 'Привет от Феник Cloud OS (Rainbow Edition)! Секретный протокол #40 сияет всеми красками.';
-            const accessToken = gapi.client.getToken().access_token;
+        async function listUserMails() {
+            try {
+                const response = await gapi.client.gmail.users.messages.list({ userId: 'me', maxResults: 5 });
+                const messages = response.result.messages;
+                const mailList = document.getElementById('mails');
+                mailList.innerHTML = '';
+                if (!messages || messages.length === 0) {
+                    mailList.innerHTML = '<div class="mail-item" style="color: #cbd5e1;">Писем нет.</div>';
+                    return;
+                }
+                for (let msg of messages) {
+                    const details = await gapi.client.gmail.users.messages.get({ userId: 'me', id: msg.id });
+                    const headers = details.result.payload.headers;
+                    const subject = headers.find(h => h.name === 'Subject')?.value || 'Без темы';
+                    const div = document.createElement('div');
+                    div.className = 'mail-item';
+                    div.innerHTML = `✉️ ${subject.substring(0, 35)}...`;
+                    mailList.appendChild(div);
+                }
+            } catch (err) { console.error("Ошибка загрузки почты", err); }
+        }
 
+        async function createFile(mimeType, name, content) {
+            const metadata = { 'name': name, 'mimeType': mimeType };
+            const accessToken = gapi.client.getToken().access_token;
             const form = new FormData();
             form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
-            form.append('file', new Blob([fileContent], { type: 'text/plain' }));
+            form.append('file', new Blob([content], { type: 'text/plain' }));
 
             await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
                 method: 'POST',
@@ -226,9 +270,9 @@
                 body: form,
             });
 
-            alert('Файл успешно создан на твоем Google Диске!');
+            alert('Создано: ' + name);
             listUserFiles();
         }
     </script>
 </body>
-</html>
+                    </html>
