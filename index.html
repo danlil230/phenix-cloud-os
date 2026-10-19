@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Феник Cloud OS — Remastered Edition</title>
+    <title>Феник Cloud OS — Cyber Neon Remaster</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
         body {
             background: linear-gradient(135deg, #ff007f, #7f00ff, #00f0ff, #00ff66, #ffcc00, #ff007f);
             background-size: 400% 400%;
-            animation: rainbowBG 12s ease infinite;
+            animation: rainbowBG 10s ease infinite;
             color: #ffffff;
             height: 100vh;
             overflow: hidden;
@@ -35,34 +35,40 @@
         @keyframes pulse { 0% { transform: scale(1); } 100% { transform: scale(1.08); } }
 
         #main-app { display: none; height: 100vh; flex-direction: column; background: transparent; }
-        header { background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.2); }
-        .brand { display: flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 600; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        header { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(12px); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(255,255,255,0.3); box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        .brand { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; color: #ffffff; text-shadow: 0 0 10px rgba(0,240,255,0.8); }
         
-        .nav-tabs { display: flex; gap: 10px; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 10px; }
-        .tab-btn { background: transparent; border: none; color: #fff; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: background 0.2s; }
-        .tab-btn.active { background: rgba(255,255,255,0.2); }
+        .nav-tabs { display: flex; gap: 6px; background: rgba(0,0,0,0.4); padding: 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); }
+        .tab-btn { background: transparent; border: none; color: #fff; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.3s; }
+        .tab-btn.active { background: linear-gradient(135deg, #00f0ff, #7f00ff); box-shadow: 0 0 12px rgba(0,240,255,0.6); }
 
-        .btn { background: linear-gradient(135deg, #2563eb, #9333ea); color: white; border: none; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: transform 0.2s; }
+        .btn { background: linear-gradient(135deg, #2563eb, #9333ea); color: white; border: none; padding: 8px 16px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13px; box-shadow: 0 0 10px rgba(147,51,234,0.5); transition: transform 0.2s; }
         .btn:hover { transform: scale(1.05); }
         
-        .content { flex: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow-y: auto; }
+        .content { flex: 1; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow-y: auto; }
         
         .cloud-box { 
-            background: rgba(0, 0, 0, 0.5); 
-            backdrop-filter: blur(15px); 
-            padding: 30px; 
+            background: rgba(13, 17, 23, 0.75); 
+            backdrop-filter: blur(20px); 
+            padding: 25px; 
             border-radius: 20px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 20px rgba(0,240,255,0.2); 
             max-width: 650px; 
             width: 100%; 
-            border: 1px solid rgba(255,255,255,0.2); 
+            border: 2px solid rgba(255,255,255,0.25); 
             display: none;
         }
         .cloud-box.active { display: block; }
         
-        .action-bar { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 15px; }
-        .file-list, .mail-list { margin-top: 15px; text-align: left; max-height: 220px; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 12px; padding: 10px; border: 1px solid rgba(255,255,255,0.1); }
-        .file-item, .mail-item { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+        .action-bar { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 12px; }
+        .file-list, .mail-list { margin-top: 10px; text-align: left; max-height: 240px; overflow-y: auto; background: rgba(0,0,0,0.5); border-radius: 12px; padding: 8px; border: 1px solid rgba(255,255,255,0.15); }
+        .file-item, .mail-item { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; font-size: 13px; cursor: pointer; transition: background 0.2s; }
+        .file-item:hover, .mail-item:hover { background: rgba(255,255,255,0.1); border-radius: 8px; }
+        
+        /* Модальное окно для чтения/ответа на письма */
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 200; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: #1e1e2f; padding: 20px; border-radius: 16px; max-width: 500px; width: 100%; border: 2px solid #00f0ff; box-shadow: 0 0 25px rgba(0,240,255,0.5); text-align: left; }
+        textarea { width: 100%; height: 100px; background: #0d1117; color: #fff; border: 1px solid #334155; border-radius: 8px; padding: 10px; margin-top: 10px; resize: none; }
     </style>
     <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
@@ -71,12 +77,12 @@
 
     <div id="boot-screen">
         <div class="console-text" id="console"></div>
-        <div style="color: #00ff66; font-size: 14px;">PHENIX REMASTERED v4.0 - ALL-IN-ONE ACTIVE</div>
+        <div style="color: #00ff66; font-size: 14px;">NEON REMASTER v4.3 - ACTIVE</div>
     </div>
 
     <div id="logo-screen">
         <div class="cat-logo">🐈‍⬛🔥</div>
-        <h2 style="color: #fff; margin-top: 10px;">Феник Cloud OS Remaster</h2>
+        <h2 style="color: #fff; margin-top: 10px;">Феник Cloud OS Neon</h2>
         <div class="win-spinner"></div>
     </div>
 
@@ -84,36 +90,50 @@
         <header>
             <div class="brand"><span>🐈‍⬛</span> Феник Hub</div>
             <div class="nav-tabs">
-                <button class="tab-btn active" onclick="switchTab('drive')">📁 Диск (5ТБ)</button>
+                <button class="tab-btn active" onclick="switchTab('drive')">📁 Диск</button>
                 <button class="tab-btn" onclick="switchTab('mail')">✉️ Почта</button>
             </div>
-            <button class="btn" id="auth-btn" style="background: linear-gradient(135deg, #059669, #10b981);">Авторизоваться</button>
+            <button class="btn" id="auth-btn" style="background: linear-gradient(135deg, #059669, #34d399);">Авторизоваться</button>
         </header>
 
         <div class="content">
             <!-- Вкладка ДИСК -->
             <div id="tab-drive" class="cloud-box active">
-                <h2 style="margin-bottom: 10px;">Ваш Google Диск</h2>
-                <p id="status-text" style="color: #e2e8f0; margin-bottom: 20px;">Подключитесь для управления файлами и документами.</p>
+                <h2 style="margin-bottom: 10px;">Ваш Google Диск (5 ТБ)</h2>
+                <p id="status-text" style="color: #cbd5e1; margin-bottom: 15px; font-size: 13px;">Нажмите кнопку авторизации для доступа к файлам.</p>
                 
                 <div class="action-bar" id="actions-bar" style="display: none;">
-                    <button class="btn" onclick="createFile('text/plain', 'Текстовый_файл.txt', 'Привет от Феник OS!')">📄 Текстовый файл</button>
-                    <button class="btn" onclick="createFile('application/vnd.google-apps.document', 'Документ_Феник.gdoc', 'Google Документ создан через Феник OS')" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">📝 Google Документ</button>
-                    <button class="btn" onclick="createFile('application/vnd.google-apps.spreadsheet', 'Таблица_Феник.gsheet', 'Таблица создана через Феник OS')" style="background: linear-gradient(135deg, #10b981, #047857);">📊 Google Таблица</button>
+                    <button class="btn" onclick="createFile('text/plain', 'Заметка.txt', 'Заметка из Феник OS')">📄 Текст</button>
+                    <button class="btn" onclick="createFile('application/vnd.google-apps.document', 'Документ.gdoc', 'Документ Google')" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">📝 Документ</button>
+                    <button class="btn" onclick="createFile('application/vnd.google-apps.spreadsheet', 'Таблица.gsheet', 'Таблица Google')" style="background: linear-gradient(135deg, #10b981, #047857);">📊 Таблица</button>
                 </div>
 
                 <div class="file-list" id="files">
-                    <div class="file-item" style="color: #cbd5e1;">Файлы не загружены. Нажмите «Авторизоваться».</div>
+                    <div class="file-item" style="color: #94a3b8;">Файлы загружаются после входа...</div>
                 </div>
             </div>
 
             <!-- Вкладка ПОЧТА -->
             <div id="tab-mail" class="cloud-box">
-                <h2 style="margin-bottom: 10px;">Входящие сообщения (Gmail)</h2>
-                <p style="color: #e2e8f0; margin-bottom: 20px;">Свежие письма из вашего почтового ящика.</p>
+                <h2 style="margin-bottom: 10px;">Входящие письма (Gmail)</h2>
+                <p style="color: #cbd5e1; margin-bottom: 15px; font-size: 13px;">Нажмите на письмо, чтобы прочитать и ответить.</p>
                 <div class="mail-list" id="mails">
-                    <div class="mail-item" style="color: #cbd5e1;">Почта ожидает авторизации...</div>
+                    <div class="mail-item" style="color: #94a3b8;">Почта ждет авторизации...</div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для чтения и ответа -->
+    <div id="modal">
+        <div class="modal-content">
+            <h3 id="modal-subject" style="color: #00f0ff; margin-bottom: 5px;">Тема письма</h3>
+            <p id="modal-sender" style="color: #94a3b8; font-size: 12px; margin-bottom: 10px;">От: </p>
+            <div id="modal-body" style="background: #0d1117; padding: 10px; border-radius: 8px; max-height: 120px; overflow-y: auto; font-size: 13px; margin-bottom: 10px;"></div>
+            <textarea id="reply-text" placeholder="Напишите ответ..."></textarea>
+            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px;">
+                <button class="btn" style="background: #dc2626;" onclick="closeModal()">Закрыть</button>
+                <button class="btn" onclick="sendReply()">Отправить</button>
             </div>
         </div>
     </div>
@@ -125,18 +145,19 @@
             'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
             'https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest'
         ];
-        const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/gmail.readonly';
+        const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send';
 
         let tokenClient;
+        let currentEmailData = null;
         const consoleEl = document.getElementById('console');
         const bootScreen = document.getElementById('boot-screen');
         const logoScreen = document.getElementById('logo-screen');
         const mainApp = document.getElementById('main-app');
 
         const logs = [
-            "Initializing Phenix Remastered Kernel...",
+            "Initializing Cyber Neon Kernel...",
             "Loading Secret Protocol #40...",
-            "Mounting Drive & Gmail modules...",
+            "Activating full Gmail & Drive modules...",
             "All systems nominal. Welcome back, Boss."
         ];
 
@@ -165,22 +186,10 @@
         }
         setTimeout(typeLogs, 300);
 
-        function gapiLoaded() {
-            gapi.load('client', initializeGapiClient);
-        }
-
-        async function initializeGapiClient() {
-            await gapi.client.init({
-                discoveryDocs: DISCOVERY_DOCS,
-            });
-        }
-
+        function gapiLoaded() { gapi.load('client', initializeGapiClient); }
+        async function initializeGapiClient() { await gapi.client.init({ discoveryDocs: DISCOVERY_DOCS }); }
         function gisLoaded() {
-            tokenClient = google.accounts.oauth2.initTokenClient({
-                client_id: CLIENT_ID,
-                scope: SCOPES,
-                callback: '',
-            });
+            tokenClient = google.accounts.oauth2.initTokenClient({ client_id: CLIENT_ID, scope: SCOPES, callback: '' });
         }
 
         const authBtn = document.getElementById('auth-btn');
@@ -196,12 +205,8 @@
                 listUserFiles();
                 listUserMails();
             };
-
-            if (gapi.client.getToken() === null) {
-                tokenClient.requestAccessToken({prompt: 'consent'});
-            } else {
-                tokenClient.requestAccessToken({prompt: ''});
-            }
+            if (gapi.client.getToken() === null) { tokenClient.requestAccessToken({prompt: 'consent'}); }
+            else { tokenClient.requestAccessToken({prompt: ''}); }
         }
 
         function switchTab(tabName) {
@@ -223,38 +228,58 @@
                 const fileList = document.getElementById('files');
                 fileList.innerHTML = '';
                 if (!files || files.length === 0) {
-                    fileList.innerHTML = '<div class="file-item" style="color: #cbd5e1;">Файлы не найдены.</div>';
+                    fileList.innerHTML = '<div class="file-item" style="color: #94a3b8;">Файлы не найдены.</div>';
                     return;
                 }
                 files.forEach((file) => {
                     const div = document.createElement('div');
                     div.className = 'file-item';
-                    div.innerHTML = `📁 ${file.name}<span style="color: #fde047;">ID: ${file.id.substring(0,6)}...</span>`;
-                    fileList.appendChild(div);
-                });
-            } catch (err) { console.error("Ошибка загрузки файлов", err); }
-        }
-
-        async function listUserMails() {
-            try {
-                const response = await gapi.client.gmail.users.messages.list({ userId: 'me', maxResults: 5 });
-                const messages = response.result.messages;
-                const mailList = document.getElementById('mails');
-                mailList.innerHTML = '';
-                if (!messages || messages.length === 0) {
-                    mailList.innerHTML = '<div class="mail-item" style="color: #cbd5e1;">Писем нет.</div>';
-                    return;
-                }
-                for (let msg of messages) {
-                    const details = await gapi.client.gmail.users.messages.get({ userId: 'me', id: msg.id });
-                    const headers = details.result.payload.headers;
-                    const subject = headers.find(h => h.name === 'Subject')?.value || 'Без темы';
-                    const div = document.createElement('div');
-                    div.className = 'mail-item';
-                    div.innerHTML = `✉️ ${subject.substring(0, 35)}...`;
+                    div.innerHTML = `📁 ${file.name}<span style="color: #38bdf8;">ID: ${file.id.substring(0,6)}...</span>`; fileList.appendChild(div); }); } catch (err) { console.error("Ошибка загрузки файлов", err); } }  async function listUserMails() { try { const response = await gapi.client.gmail.users.messages.list({ userId: 'me', maxResults: 5 }); const messages = response.result.messages; const mailList = document.getElementById('mails'); mailList.innerHTML = ''; if (!messages \vert{}\vert{} messages.length === 0) { mailList.innerHTML = '<div class="mail-item" style="color: #94a3b8;">Писем нет.</div>'; return; } for (let msg of messages) { const details = await gapi.client.gmail.users.messages.get({ userId: 'me', id: msg.id }); const headers = details.result.payload.headers; const subject = headers.find(h => h.name === 'Subject')?.value \vert{}\vert{} 'Без темы'; const sender = headers.find(h => h.name === 'From')?.value \vert{}\vert{} 'Неизвестно'; const snippet = details.result.snippet \vert{}\vert{} '';  const div = document.createElement('div'); div.className = 'mail-item'; div.innerHTML = `✉️ <b>${subject.substring(0, 25)}...</b>`;
+                    div.onclick = () => openEmailModal(subject, sender, snippet, sender);
                     mailList.appendChild(div);
                 }
             } catch (err) { console.error("Ошибка загрузки почты", err); }
+        }
+
+        function openEmailModal(subject, sender, body, replyTo) {
+            currentEmailData = { subject, replyTo };
+            document.getElementById('modal-subject').innerText = subject;
+            document.getElementById('modal-sender').innerText = 'От: ' + sender;
+            document.getElementById('modal-body').innerText = body;
+            document.getElementById('reply-text').value = '';
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+        async function sendReply() {
+            const replyText = document.getElementById('reply-text').value;
+            if (!replyText) { alert('Введите текст ответа!'); return; }
+            
+            // Извлекаем email адрес отправителя из строки "Name <email@domain.com>"
+            let match = currentEmailData.replyTo.match(/<(.+?)>/);
+            let recipient = match ? match[1] : currentEmailData.replyTo;
+
+            const emailLines = [
+                `To: ${recipient}`, `Subject: Re: ${currentEmailData.subject}`,
+                `Content-Type: text/plain; charset="UTF-8"`,
+                ``,
+                replyText
+            ];
+            const email = emailLines.join('\r\n');
+            const base64EncodedEmail = btoa(unescape(encodeURIComponent(email))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+            try {
+                await gapi.client.gmail.users.messages.send({
+                    userId: 'me',
+                    resource: { raw: base64EncodedEmail }
+                });
+                alert('Ответ успешно отправлен!');
+                closeModal();
+            } catch (err) {
+                console.error("Ошибка отправки", err);
+                alert('Не удалось отправить ответ.');
+            }
         }
 
         async function createFile(mimeType, name, content) {
@@ -275,4 +300,4 @@
         }
     </script>
 </body>
-                    </html>
+</html>
