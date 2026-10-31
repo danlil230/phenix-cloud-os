@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Семейный VPN 🛡️ Твои правила</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --accent-gold: #f39c12;
+            --accent-hover: #d35400;
+            --text-main: #e0e0e0;
+            --text-muted: #aaaaaa;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        header {
+            margin: 40px 0 20px 0;
+        }
+
+        h1 {
+            color: var(--accent-gold);
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            text-align: left;
+            border: 1px solid #2c2c2c;
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            color: var(--accent-gold);
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--accent-gold);
+            color: #121212;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            transition: background 0.2s, transform 0.1s;
+            margin-top: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            font-size: 1.05rem;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+            color: #fff;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .setup-section {
+            background: linear-gradient(135deg, #1f1f1f, #181818);
+            border: 2px solid var(--accent-gold);
+            border-radius: 16px;
+            padding: 30px 20px;
+            margin: 40px 0 20px 0;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.15);
+        }
+
+        .setup-section h3 {
+            color: var(--accent-gold);
+            margin-top: 0;
+            font-size: 1.4rem;
+        }
+
+        .setup-section p {
+            color: var(--text-main);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        footer {
+            margin: 40px 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: var(--accent-gold);
+            text-decoration: none;
+        }
+    </style>
+    <script>
+        function addSubscription() {
+            // Открываем пустую страницу-прокладку в новом окне/вкладке, которая тут же пушит протокол подписки
+            var subWindow = window.open('about:blank', '_blank');
+            if (subWindow) {
+                subWindow.location.href = 'sub://**https://gist.githubusercontent.com/danlil230/81039001048047a3f6c37f46a8ae9224/raw/96b62194cc7c2ca689b2845d665531eb49989300/Full.yaml**';
+            } else {
+                // Если браузер заблокировал всплывающее окно, перенаправляем текущую страницу
+                window.location.href = 'sub://**https://gist.githubusercontent.com/danlil230/81039001048047a3f6c37f46a8ae9224/raw/96b62194cc7c2ca689b2845d665531eb49989300/Full.yaml**';
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>🛡️ Семейный VPN</h1>
+            <div class="subtitle">Максимальная безопасность и твой личный контроль сети.</div>
+        </header>
+
+        <!-- Пункт 1: Безопасность -->
+        <div class="card">
+            <h2>🔒 1. Безопасность</h2>
+            <p>Твои данные никто не ворует. А если и попытается — мы об этом узнаем мгновенно, закроем старые уязвимые сервера и автоматически заменим их на абсолютно новые.</p>
+        </div>
+
+        <!-- Пункт 2: Надежность -->
+        <div class="card">
+            <h2>⚡ 2. Надежность</h2>
+            <p>Сервера проверяются администратором круглосуточно в режиме реального времени. Если какой-то узел потухнет или начнет сбоить, он моментально удаляется и заменяется резервной альтернативой.</p>
+        </div>
+
+        <!-- Пункт 3: Крутость -->
+        <div class="card">
+            <h2>🚀 3. Крутость и Безлимит</h2>
+            <p>Никаких искусственных ограничений — теперь у нас честный <b>безлимит</b>. Серверов пока что компактный набор, но мы гарантируем, что в будущем база будет расширяться.</p>
+        </div>
+
+        <!-- Кнопка перехода к настройке подписки -->
+        <div style="margin: 40px 0;">
+            <a href="#setup" class="btn" style="font-size: 1.1rem; padding: 16px;">⚙️ Настроить подписку</a>
+        </div>
+
+        <!-- Вторая половинка страницы (Инструкция и кнопка добавления) -->
+        <div id="setup" class="setup-section">
+            <h3>📥 Установка и подключение</h3>
+            <p>
+                <b>Шаг 1.</b> Убедись, что на твоем устройстве установлен клиент <b>Happ</b>.<br>
+                <b>Шаг 2.</b> Нажми на кнопку ниже — откроется системное окно для автоматического добавления подписки в твое приложение.<br>
+                <b>Шаг 3.</b> Не забудь в настройках клиента включить режим <i>«Обход локальных сетей и РФ»</i> для корректной работы маркетплейсов и банков.
+            </p>
+            
+            <!-- Кнопка с защищенным скриптом редиректа через about:blank -->
+            <button onclick="addSubscription()" class="btn">✨ Добавить подписку в один клик</button>
+        </div>
+
+        <footer>
+            Пункт связи и саппорт: <a href="**https://t.me/+c-jXwsei3IRlYjgy**" target="_blank">Написать в поддержку</a><br>
+            Работает на базе личного Gist-миксера 🛡️
+        </footer>
+    </div>
+
+</body>
+</html>
